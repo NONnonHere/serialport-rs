@@ -228,11 +228,13 @@ impl fmt::Display for Parity {
 /// Stop bits are transmitted after every character.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[non_exhaustive]
 pub enum StopBits {
     /// One stop bit.
     One,
 
     /// One and a half stop bits.
+    #[cfg(target_os = "windows")]
     OnePointFive,
 
     /// Two stop bits.
@@ -243,6 +245,7 @@ impl fmt::Display for StopBits {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             StopBits::One => write!(f, "One"),
+            #[cfg(target_os = "windows")]
             StopBits::OnePointFive => write!(f, "OnePointFive"),
             StopBits::Two => write!(f, "Two"),
         }
@@ -253,6 +256,7 @@ impl From<StopBits> for u8 {
     fn from(value: StopBits) -> Self {
         match value {
             StopBits::One => 1,
+            #[cfg(target_os = "windows")]
             StopBits::OnePointFive => 1,
             StopBits::Two => 2,
         }
